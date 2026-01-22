@@ -339,12 +339,11 @@
         );
 
         const InputField = ({ label, value, onChange, colorClass = "border-[#30363d]", icon: Icon }) => (
-            <div className="relative group"><label className="block text-[10px] text-white/40 font-bold uppercase mb-1 flex items-center gap-1 group-hover:text-cyan-400 transition-colors tracking-widest">{Icon && <Icon size={10} />} {label}</label><input type="number" step="0.1" placeholder="-" value={value} onChange={(e) => onChange(e.target.value)} className={w-full bg-black/40 border rounded-lg px-3 py-2 font-mono text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all ${colorClass} ${value !== "" && value !== 0 ? 'text-cyan-300 font-bold border-cyan-500/50 bg-cyan-900/10 shadow-[0_0_10px_rgba(6,182,212,0.1)]' : 'text-white/30'}} /></div>
+            <div className="relative group"><label className="block text-[10px] text-white/40 font-bold uppercase mb-1 flex items-center gap-1 group-hover:text-cyan-400 transition-colors tracking-widest">{Icon && <Icon size={10} />} {label}</label><input type="number" step="0.1" placeholder="-" value={value} onChange={(e) => onChange(e.target.value)} className={`w-full bg-black/40 border rounded-lg px-3 py-2 font-mono text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all ${colorClass} ${value !== "" && value !== 0 ? 'text-cyan-300 font-bold border-cyan-500/50 bg-cyan-900/10 shadow-[0_0_10px_rgba(6,182,212,0.1)]' : 'text-white/30'}`} /></div>
         );
 
         const InventoryRow = ({ item, onUpdate, onLinkBarcode, pendingBarcode, isWells, categoryName, onDelete }) => {
             const [isExpanded, setIsExpanded] = useState(false);
-            const [showSpecs, setShowSpecs] = useState(false);
             const isUnitBased = categoryName.includes("Beers") || categoryName.includes("Seltzer") || categoryName.includes("Non Alcoholic");
             const totalPhys = (parseFloat(item.bar1)||0) + (parseFloat(item.bar2)||0) + (parseFloat(item.bodega)||0) + (parseFloat(item.barroluco)||0);
             const totalStart = (parseFloat(item.start_bar1)||0) + (parseFloat(item.start_bar2)||0) + (parseFloat(item.start_bodega)||0) + (parseFloat(item.start_barroluco)||0);
@@ -380,9 +379,9 @@
             }
 
             return (
-                <div className={rounded-xl border shadow-lg transition-all duration-300 overflow-hidden ${statusColor} mb-3 relative z-10 backdrop-blur-md}>
+                <div className={`rounded-xl border shadow-lg transition-all duration-300 overflow-hidden ${statusColor} mb-3 relative z-10 backdrop-blur-md`}>
                     <div className="p-4 flex justify-between items-center cursor-pointer hover:bg-white/5 transition-colors" onClick={() => setIsExpanded(!isExpanded)}>
-                        <div className="flex-1"><div className="flex items-center gap-2"><span className="font-bold text-white text-base tracking-wide drop-shadow-md">{item.name}</span>{(item.barcode || item.barcode_case) && <Icons.Barcode size={14} className="text-cyan-500" />}{(hasPhysical && hasStart) ? <span className={text-xs font-mono font-bold px-2 py-0.5 rounded-md ${badgeClass}}>{diff > 0 ? "+" : ""}{diff.toFixed(1)}</span> : null}</div><div className="text-xs text-white/40 mt-1 flex gap-3 font-mono tracking-wide"><span>On Hand: <b className="text-white">{totalStart}</b></span><span className="text-white/20">|</span><span>Physical: <b className="text-white">{totalPhys}</b></span></div></div>
+                        <div className="flex-1"><div className="flex items-center gap-2"><span className="font-bold text-white text-base tracking-wide drop-shadow-md">{item.name}</span>{(item.barcode || item.barcode_case) && <Icons.Barcode size={14} className="text-cyan-500" />}{(hasPhysical && hasStart) ? <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-md ${badgeClass}`}>{diff > 0 ? "+" : ""}{diff.toFixed(1)}</span> : null}</div><div className="text-xs text-white/40 mt-1 flex gap-3 font-mono tracking-wide"><span>On Hand: <b className="text-white">{totalStart}</b></span><span className="text-white/20">|</span><span>Physical: <b className="text-white">{totalPhys}</b></span></div></div>
                         <div>{isExpanded ? <Icons.ChevronUp className="text-cyan-500" /> : <Icons.ChevronDown className="text-white/30" />}</div>
                     </div>
                     {isExpanded && (
@@ -392,33 +391,8 @@
                                 <div className="bg-black/40 p-3 rounded-lg border border-white/10 shadow-inner"><div className="flex items-center gap-2 mb-3 text-cyan-400 font-bold text-[10px] uppercase tracking-widest"><Icons.Box size={12} /> 1. On Hand (Start)</div><div className="grid grid-cols-4 gap-2"><InputField label="Bar 1" value={item.start_bar1} onChange={(v) => onUpdate(item.id, 'start_bar1', v)} colorClass="border-white/10 focus:border-cyan-500" /><InputField label="Bar 2" value={item.start_bar2} onChange={(v) => onUpdate(item.id, 'start_bar2', v)} colorClass="border-white/10 focus:border-cyan-500" /><InputField label="Storage" value={item.start_bodega} onChange={(v) => onUpdate(item.id, 'start_bodega', v)} colorClass="border-white/10 focus:border-cyan-500" /><InputField label="Barroluco" value={item.start_barroluco} onChange={(v) => onUpdate(item.id, 'start_barroluco', v)} colorClass="border-white/10 focus:border-cyan-500" /></div></div>
                                 <div className="bg-[#1D1F23]/80 p-3 rounded-lg border border-white/10 mt-2"><div className="grid grid-cols-1 gap-3"><InputField label="2. Purchases (+)" value={item.purchases} onChange={(v) => onUpdate(item.id, 'purchases', v)} icon={Icons.ShoppingCart} colorClass="border-emerald-500/30 focus:border-emerald-400 text-emerald-300" /></div></div>
                                 <div className="bg-black/40 p-3 rounded-lg border border-white/10 mt-2"><div className="flex items-center gap-2 mb-3 text-cyan-400 font-bold text-[10px] uppercase tracking-widest"><Icons.MapPin size={12} /> 3. Physical Count (End)</div><div className="grid grid-cols-4 gap-2"><InputField label="Bar 1" value={item.bar1} onChange={(v) => onUpdate(item.id, 'bar1', v)} colorClass="border-white/10 focus:border-indigo-500" /><InputField label="Bar 2" value={item.bar2} onChange={(v) => onUpdate(item.id, 'bar2', v)} colorClass="border-white/10 focus:border-indigo-500" /><InputField label="Storage" value={item.bodega} onChange={(v) => onUpdate(item.id, 'bodega', v)} colorClass="border-white/10 focus:border-indigo-500" /><InputField label="Barroluco" value={item.barroluco} onChange={(v) => onUpdate(item.id, 'barroluco', v)} colorClass="border-white/10 focus:border-indigo-500" /></div></div>
-                                <div className="bg-amber-900/10 p-3 rounded-lg border border-amber-500/20 mt-2 shadow-[0_0_15px_rgba(245,158,11,0.05)]"><div className="flex items-center gap-2 mb-3 text-amber-500 font-bold text-[10px] uppercase tracking-widest"><Icons.Calculator size={12} /> 4. Sales Calculator (POS)</div><div className="mb-4 bg-amber-500/5 p-3 rounded border border-amber-500/10"><div className="text-[10px] text-amber-300 mb-1 uppercase font-bold tracking-wider">{isUnitBased ? "Unit Calculator" : Shot Calculator (1.2oz @ ${isWells ? '1L' : '750ml'})}</div><div className="grid grid-cols-3 gap-3 mb-2"><div className="relative group"><label className="block text-[10px] text-amber-300/70 font-bold uppercase mb-1">{isUnitBased ? "Cans / Units" : "Bottles"}</label><input type="number" step="1" placeholder="0" value={item.sold_bottles || ""} onChange={(e) => handleSalesChange('bottles', e.target.value)} className="w-full bg-black/50 border border-amber-500/30 rounded-lg px-2 py-2 font-mono text-sm focus:outline-none focus:border-amber-400 focus:shadow-[0_0_10px_rgba(245,158,11,0.3)] text-amber-100 transition-all" /></div><div className="relative group"><label className="block text-[10px] text-amber-300/70 font-bold uppercase mb-1">{isUnitBased ? "Buckets (x6)" : "Shots"}</label><input type="number" step="1" placeholder="0" value={item.sold_shots || ""} onChange={(e) => handleSalesChange('shots', e.target.value)} className="w-full bg-black/50 border border-amber-500/30 rounded-lg px-2 py-2 font-mono text-sm focus:outline-none focus:border-amber-400 focus:shadow-[0_0_10px_rgba(245,158,11,0.3)] text-amber-100 transition-all" /></div><div className="relative group"><label className="block text-[10px] text-amber-300/70 font-bold uppercase mb-1">{isUnitBased ? "Comps (Units)" : "Comps (Bottles)"}</label><input type="number" step="1" placeholder="0" value={item.sold_comps || ""} onChange={(e) => handleSalesChange('comps', e.target.value)} className="w-full bg-black/50 border border-emerald-500/30 rounded-lg px-2 py-2 font-mono text-sm focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_10px_rgba(16,185,129,0.3)] text-emerald-100 transition-all" /></div></div></div><div className="grid grid-cols-1 gap-3"><InputField label="Total Sales POS (Calculated)" value={item.sales} onChange={(v) => onUpdate(item.id, 'sales', v)} icon={Icons.DollarSign} colorClass="border-blue-500/30 focus:border-blue-400 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.1)]" /></div><div className="text-right mt-4 text-xs text-white/40 font-mono space-y-2"><div className="text-amber-500/80">Sys Sales = {totalStart} + {purchases || 0} - {totalPhys} = <b>{systemConsumption}</b></div><div className={text-xl font-black ${diff < 0 ? 'text-red-500 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]' : 'text-emerald-500 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]'}}>Diff = {diff.toFixed(2)}</div></div></div>
-                                
-                                <div className="flex justify-between items-center pt-4 border-t border-white/10 mt-2">
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => setShowSpecs(!showSpecs)}
-                                            className={p-2 rounded-lg border transition-all ${showSpecs ? 'bg-purple-900/40 border-purple-500 text-purple-300 shadow-[0_0_10px_rgba(168,85,247,0.3)]' : 'bg-white/5 border-white/10 text-white/40 hover:text-white'}}
-                                            title="Configure Bottle Specs"
-                                        >
-                                            <Icons.Settings size={14} />
-                                        </button>
-                                        <div className="text-[9px] text-white/20 font-mono tracking-widest">ID: {item.id}</div>
-                                    </div>
-                                    <button onClick={(e) => { e.stopPropagation(); onDelete(item); }} className="flex items-center gap-2 bg-red-900/10 hover:bg-red-900/30 text-red-500 hover:text-red-400 border border-red-900/30 hover:border-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.4)] px-3 py-1.5 rounded-lg text-xs font-bold transition-all"><Icons.Trash size={14} /> Delete</button>
-                                </div>
-
-                                {showSpecs && (
-                                    <div className="mt-3 p-3 bg-purple-900/10 rounded-lg border border-purple-500/20 animate-in">
-                                        <div className="flex items-center gap-2 mb-3 text-purple-400 font-bold text-[10px] uppercase tracking-widest">
-                                            Bottle Specs (Weights)
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <InputField label="Empty (g)" value={item.weight_empty} onChange={(v) => onUpdate(item.id, 'weight_empty', v)} colorClass="border-purple-500/30 focus:border-purple-400 text-purple-300" />
-                                            <InputField label="Full (g)" value={item.weight_full} onChange={(v) => onUpdate(item.id, 'weight_full', v)} colorClass="border-purple-500/30 focus:border-purple-400 text-purple-300" />
-                                        </div>
-                                    </div>
-                                )}
+                                <div className="bg-amber-900/10 p-3 rounded-lg border border-amber-500/20 mt-2 shadow-[0_0_15px_rgba(245,158,11,0.05)]"><div className="flex items-center gap-2 mb-3 text-amber-500 font-bold text-[10px] uppercase tracking-widest"><Icons.Calculator size={12} /> 4. Sales Calculator (POS)</div><div className="mb-4 bg-amber-500/5 p-3 rounded border border-amber-500/10"><div className="text-[10px] text-amber-300 mb-1 uppercase font-bold tracking-wider">{isUnitBased ? "Unit Calculator" : `Shot Calculator (1.2oz @ ${isWells ? '1L' : '750ml'})`}</div><div className="grid grid-cols-3 gap-3 mb-2"><div className="relative group"><label className="block text-[10px] text-amber-300/70 font-bold uppercase mb-1">{isUnitBased ? "Cans / Units" : "Bottles"}</label><input type="number" step="1" placeholder="0" value={item.sold_bottles || ""} onChange={(e) => handleSalesChange('bottles', e.target.value)} className="w-full bg-black/50 border border-amber-500/30 rounded-lg px-2 py-2 font-mono text-sm focus:outline-none focus:border-amber-400 focus:shadow-[0_0_10px_rgba(245,158,11,0.3)] text-amber-100 transition-all" /></div><div className="relative group"><label className="block text-[10px] text-amber-300/70 font-bold uppercase mb-1">{isUnitBased ? "Buckets (x6)" : "Shots"}</label><input type="number" step="1" placeholder="0" value={item.sold_shots || ""} onChange={(e) => handleSalesChange('shots', e.target.value)} className="w-full bg-black/50 border border-amber-500/30 rounded-lg px-2 py-2 font-mono text-sm focus:outline-none focus:border-amber-400 focus:shadow-[0_0_10px_rgba(245,158,11,0.3)] text-amber-100 transition-all" /></div><div className="relative group"><label className="block text-[10px] text-amber-300/70 font-bold uppercase mb-1">{isUnitBased ? "Comps (Units)" : "Comps (Bottles)"}</label><input type="number" step="1" placeholder="0" value={item.sold_comps || ""} onChange={(e) => handleSalesChange('comps', e.target.value)} className="w-full bg-black/50 border border-emerald-500/30 rounded-lg px-2 py-2 font-mono text-sm focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_10px_rgba(16,185,129,0.3)] text-emerald-100 transition-all" /></div></div></div><div className="grid grid-cols-1 gap-3"><InputField label="Total Sales POS (Calculated)" value={item.sales} onChange={(v) => onUpdate(item.id, 'sales', v)} icon={Icons.DollarSign} colorClass="border-blue-500/30 focus:border-blue-400 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.1)]" /></div><div className="text-right mt-4 text-xs text-white/40 font-mono space-y-2"><div className="text-amber-500/80">Sys Sales = {totalStart} + {purchases || 0} - {totalPhys} = <b>{systemConsumption}</b></div><div className={`text-xl font-black ${diff < 0 ? 'text-red-500 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]' : 'text-emerald-500 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]'}`}>Diff = {diff.toFixed(2)}</div></div></div>
+                                <div className="flex justify-between items-center pt-4 border-t border-white/10 mt-2"><div className="text-[9px] text-white/20 font-mono tracking-widest">ID: {item.id}</div><button onClick={(e) => { e.stopPropagation(); onDelete(item); }} className="flex items-center gap-2 bg-red-900/10 hover:bg-red-900/30 text-red-500 hover:text-red-400 border border-red-900/30 hover:border-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.4)] px-3 py-1.5 rounded-lg text-xs font-bold transition-all"><Icons.Trash size={14} /> Delete</button></div>
                             </div>
                         </div>
                     )}
@@ -607,140 +581,23 @@
             );
         };
         
-        // --- FIXED COUNT REVIEW MODAL (NEON) ---
         const CountReviewModal = ({ isOpen, onClose, data, onUpdate }) => {
             if (!isOpen) return null;
-            
-            // NEON LOCATIONS
             const mainLocations = [
                 { id: 'bar1', label: 'Bar 1', color: 'text-cyan-400', bg: 'bg-cyan-900/20', border: 'border-cyan-500/30' },
                 { id: 'bar2', label: 'Bar 2', color: 'text-purple-400', bg: 'bg-purple-900/20', border: 'border-purple-500/30' },
                 { id: 'bodega', label: 'Storage', color: 'text-amber-400', bg: 'bg-amber-900/20', border: 'border-amber-500/30' },
                 { id: 'barroluco', label: 'Barroluco', color: 'text-pink-400', bg: 'bg-pink-900/20', border: 'border-pink-500/30' }
             ];
-
-            const getItemsForField = (fieldId) => {
-                const found = [];
-                data.forEach(cat => {
-                    cat.items.forEach(item => {
-                        const val = parseFloat(item[fieldId]);
-                        if (!isNaN(val) && val > 0) {
-                            found.push({ ...item, currentVal: val });
-                        }
-                    });
-                });
-                return found;
-            };
-
-            const grandTotal = data.reduce((acc, cat) => {
-                return acc + cat.items.reduce((iAcc, item) => {
-                      const t = (parseFloat(item.bar1)||0) + (parseFloat(item.bar2)||0) + (parseFloat(item.bodega)||0) + (parseFloat(item.barroluco)||0);
-                      return iAcc + t;
-                }, 0);
-            }, 0);
-
+            const getItemsForField = (fieldId) => { const found = []; data.forEach(cat => { cat.items.forEach(item => { const val = parseFloat(item[fieldId]); if (!isNaN(val) && val > 0) { found.push({ ...item, currentVal: val }); } }); }); return found; };
+            const grandTotal = data.reduce((acc, cat) => { return acc + cat.items.reduce((iAcc, item) => { const t = (parseFloat(item.bar1)||0) + (parseFloat(item.bar2)||0) + (parseFloat(item.bodega)||0) + (parseFloat(item.barroluco)||0); return iAcc + t; }, 0); }, 0);
             return (
                 <div className="fixed inset-0 bg-black/95 flex flex-col z-[100] backdrop-blur-xl animate-in">
                     <div className="p-6 border-b border-white/10 flex justify-between items-center bg-[#050505]">
-                        <div>
-                            <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                                <Icons.List className="text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.6)]" /> SYSTEM AUDIT
-                            </h2>
-                            <p className="text-[10px] text-white/40 font-mono mt-1 uppercase tracking-widest">Total Physical Count: <span className="text-white font-bold">{grandTotal}</span></p>
-                        </div>
+                        <div><h2 className="text-2xl font-black text-white flex items-center gap-3"><Icons.List className="text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.6)]" /> SYSTEM AUDIT</h2><p className="text-[10px] text-white/40 font-mono mt-1 uppercase tracking-widest">Total Physical Count: <span className="text-white font-bold">{grandTotal}</span></p></div>
                         <button onClick={onClose} className="px-6 py-2 bg-white/5 text-white/60 rounded-lg hover:bg-white/10 hover:text-white font-bold text-xs uppercase tracking-widest border border-white/5 transition-all">Close</button>
                     </div>
-
-                    <div className="flex-1 overflow-y-auto p-6 space-y-8">
-                        {mainLocations.map(mainLoc => {
-                            const subZones = ZONES_CONFIG[mainLoc.id];
-                            
-                            if (subZones) {
-                                const zonesWithData = subZones.map(z => ({...z, items: getItemsForField(z.id)})).filter(z => z.items.length > 0);
-                                if (zonesWithData.length === 0) return null;
-
-                                return (
-                                    <div key={mainLoc.id} className="space-y-4">
-                                        <div className={`sticky top-0 z-10 px-4 py-3 rounded-xl border backdrop-blur-md shadow-lg ${mainLoc.bg} ${mainLoc.border}`}>
-                                            <h3 className={`font-black text-sm uppercase tracking-[0.2em] ${mainLoc.color} drop-shadow-sm`}>{mainLoc.label}</h3>
-                                        </div>
-                                        {zonesWithData.map(zone => (
-                                            <div key={zone.id} className="pl-4 border-l border-white/10 ml-2">
-                                                <h4 className="text-xs font-bold text-white/60 mb-3 flex items-center gap-2 px-2 uppercase tracking-wider">
-                                                    <span className="text-lg opacity-80">{zone.icon}</span> {zone.label}
-                                                </h4>
-                                                <div className="grid gap-2">
-                                                    {zone.items.map(item => (
-                                                        <div key={item.id} className="bg-[#0A0A0A] p-4 rounded-xl border border-white/5 flex justify-between items-center shadow-sm hover:border-white/20 transition-all group">
-                                                            <div className="font-bold text-white group-hover:text-cyan-100 transition-colors">{item.name}</div>
-                                                            <div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1 border border-white/10 group-hover:border-cyan-500/30 transition-colors">
-                                                                <span className="text-[9px] text-white/30 uppercase font-bold tracking-wider">Qty</span>
-                                                                <input 
-                                                                    type="number" 
-                                                                    value={item.currentVal} 
-                                                                    onChange={(e) => {
-                                                                        const val = parseFloat(e.target.value) || 0;
-                                                                        let newTotal = val; 
-                                                                        subZones.forEach(z => {
-                                                                            if (z.id !== zone.id) {
-                                                                                newTotal += (parseFloat(item[z.id]) || 0);
-                                                                            }
-                                                                        });
-                                                                        onUpdate(item.id, {
-                                                                            [zone.id]: val,
-                                                                            [mainLoc.id]: newTotal
-                                                                        });
-                                                                    }}
-                                                                    className="w-16 bg-transparent text-right font-mono font-bold text-cyan-400 focus:outline-none focus:text-cyan-300"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                );
-                            } else {
-                                const items = getItemsForField(mainLoc.id);
-                                if (items.length === 0) return null;
-                                
-                                return (
-                                    <div key={mainLoc.id} className="space-y-4">
-                                        <div className={`sticky top-0 z-10 px-4 py-3 rounded-xl border backdrop-blur-md shadow-lg ${mainLoc.bg} ${mainLoc.border}`}>
-                                            <h3 className={`font-black text-sm uppercase tracking-[0.2em] ${mainLoc.color} drop-shadow-sm`}>{mainLoc.label}</h3>
-                                        </div>
-                                        <div className="grid gap-2">
-                                            {items.map(item => (
-                                                <div key={item.id} className="bg-[#0A0A0A] p-4 rounded-xl border border-white/5 flex justify-between items-center shadow-sm hover:border-white/20 transition-all group">
-                                                    <div className="font-bold text-white group-hover:text-cyan-100 transition-colors">{item.name}</div>
-                                                    <div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1 border border-white/10 group-hover:border-cyan-500/30 transition-colors">
-                                                        <span className="text-[9px] text-white/30 uppercase font-bold tracking-wider">Qty</span>
-                                                        <input 
-                                                            type="number" 
-                                                            value={item.currentVal}
-                                                            onChange={(e) => onUpdate(item.id, mainLoc.id, e.target.value)}
-                                                            className="w-16 bg-transparent text-right font-mono font-bold text-cyan-400 focus:outline-none focus:text-cyan-300"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                );
-                            }
-                        })}
-                        
-                        {grandTotal === 0 && (
-                            <div className="text-center text-white/20 py-32 flex flex-col items-center">
-                                <Icons.List size={80} className="mb-6 opacity-10" />
-                                <p className="text-xl font-light uppercase tracking-widest">No data recorded</p>
-                                <p className="text-xs mt-2 font-mono opacity-50">Initiate count sequence to view metrics.</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
+                    <div className="flex-1 overflow-y-auto p-6 space-y-8">{mainLocations.map(mainLoc => { const subZones = ZONES_CONFIG[mainLoc.id]; if (subZones) { const zonesWithData = subZones.map(z => ({...z, items: getItemsForField(z.id)})).filter(z => z.items.length > 0); if (zonesWithData.length === 0) return null; return (<div key={mainLoc.id} className="space-y-4"><div className={`sticky top-0 z-10 px-4 py-3 rounded-xl border backdrop-blur-md shadow-lg ${mainLoc.bg} ${mainLoc.border}`}><h3 className={`font-black text-sm uppercase tracking-[0.2em] ${mainLoc.color} drop-shadow-sm`}>{mainLoc.label}</h3></div>{zonesWithData.map(zone => (<div key={zone.id} className="pl-4 border-l border-white/10 ml-2"><h4 className="text-xs font-bold text-white/60 mb-3 flex items-center gap-2 px-2 uppercase tracking-wider"><span className="text-lg opacity-80">{zone.icon}</span> {zone.label}</h4><div className="grid gap-2">{zone.items.map(item => (<div key={item.id} className="bg-[#0A0A0A] p-4 rounded-xl border border-white/5 flex justify-between items-center shadow-sm hover:border-white/20 transition-all group"><div className="font-bold text-white group-hover:text-cyan-100 transition-colors">{item.name}</div><div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1 border border-white/10 group-hover:border-cyan-500/30 transition-colors"><span className="text-[9px] text-white/30 uppercase font-bold tracking-wider">Qty</span><input type="number" value={item.currentVal} onChange={(e) => { const val = parseFloat(e.target.value) || 0; let newTotal = val; subZones.forEach(z => { if (z.id !== zone.id) { newTotal += (parseFloat(item[z.id]) || 0); } }); onUpdate(item.id, { [zone.id]: val, [mainLoc.id]: newTotal }); }} className="w-16 bg-transparent text-right font-mono font-bold text-cyan-400 focus:outline-none focus:text-cyan-300" /></div></div>))}</div></div>))}</div>); } else { const items = getItemsForField(mainLoc.id); if (items.length === 0) return null; return (<div key={mainLoc.id} className="space-y-4"><div className={`sticky top-0 z-10 px-4 py-3 rounded-xl border backdrop-blur-md shadow-lg ${mainLoc.bg} ${mainLoc.border}`}><h3 className={`font-black text-sm uppercase tracking-[0.2em] ${mainLoc.color} drop-shadow-sm`}>{mainLoc.label}</h3></div><div className="grid gap-2">{items.map(item => (<div key={item.id} className="bg-[#0A0A0A] p-4 rounded-xl border border-white/5 flex justify-between items-center shadow-sm hover:border-white/20 transition-all group"><div className="font-bold text-white group-hover:text-cyan-100 transition-colors">{item.name}</div><div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1 border border-white/10 group-hover:border-cyan-500/30 transition-colors"><span className="text-[9px] text-white/30 uppercase font-bold tracking-wider">Qty</span><input type="number" value={item.currentVal} onChange={(e) => onUpdate(item.id, mainLoc.id, e.target.value)} className="w-16 bg-transparent text-right font-mono font-bold text-cyan-400 focus:outline-none focus:text-cyan-300" /></div></div>))}</div></div>); } })} {grandTotal === 0 && (<div className="text-center text-white/20 py-32 flex flex-col items-center"><Icons.List size={80} className="mb-6 opacity-10" /><p className="text-xl font-light uppercase tracking-widest">No data recorded</p><p className="text-xs mt-2 font-mono opacity-50">Initiate count sequence to view metrics.</p></div>)}</div></div>);
         };
 
         const ChartsView = ({ data, onClose }) => {
@@ -770,7 +627,6 @@
                 if (canvasRef.current && window.Chart) {
                     if (chartInstance.current) chartInstance.current.destroy();
                     const ctx = canvasRef.current.getContext('2d');
-                    // NEON CHART CONFIG
                     chartInstance.current = new window.Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(categoryData), datasets: [{ data: Object.values(categoryData), backgroundColor: ['#06b6d4', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#6366f1', '#ef4444'], borderColor: '#050505', borderWidth: 4, hoverOffset: 10 }] }, options: { responsive: true, maintainAspectRatio: false, layout: { padding: 20 }, plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 11, family: 'monospace' }, boxWidth: 10, padding: 15 } } } } });
                 }
                 return () => { if (chartInstance.current) chartInstance.current.destroy(); };
@@ -820,6 +676,75 @@
                     </div>
                     <div className="flex-1 overflow-y-auto p-6 bg-[#050505]">
                         {purchasedItems.length === 0 ? <div className="text-center text-white/20 mt-32 flex flex-col items-center"><Icons.Package size={80} className="mb-6 opacity-10" /><p className="text-xl font-light uppercase tracking-widest">No inbound stock</p></div> : <div className="space-y-6"><div className="bg-[#0A0A0A] p-6 rounded-2xl border border-white/10 shadow-xl"><div className="text-[10px] text-white/40 uppercase font-bold tracking-[0.2em] mb-2">Total Units Added</div><div className="text-5xl font-black text-emerald-400 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">{totalPurchasedUnits}</div></div><div className="grid gap-3">{purchasedItems.map((item, idx) => (<div key={idx} className="bg-[#0A0A0A] p-4 rounded-xl border border-white/5 flex justify-between items-center hover:border-emerald-500/30 transition-all group"><div><div className="font-bold text-white text-lg tracking-wide group-hover:text-emerald-100">{item.name}</div><div className="text-[9px] text-white/30 uppercase tracking-widest mt-1">{item.categoryName}</div></div><div className="text-emerald-400 font-mono font-black text-2xl drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]">+{item.purchaseVal}</div></div>))}</div></div>}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- NEW BOTTLE WEIGHT MODAL (ADDED) ---
+        const BottleSpecsModal = ({ isOpen, onClose, data, onUpdate }) => {
+            if (!isOpen) return null;
+            const [searchTerm, setSearchTerm] = useState("");
+            const [localWeights, setLocalWeights] = useState({});
+
+            const handleWeightChange = (itemId, type, val) => {
+                setLocalWeights(prev => ({ ...prev, [itemId]: { ...prev[itemId], [type]: val } }));
+            };
+
+            const saveWeight = (item) => {
+                const weights = localWeights[item.id];
+                if (weights) {
+                    if (weights.empty !== undefined) onUpdate(item.id, 'weight_empty', weights.empty);
+                    if (weights.full !== undefined) onUpdate(item.id, 'weight_full', weights.full);
+                    playSound('success');
+                }
+            };
+
+            const filteredAllItems = [];
+            data.forEach(cat => {
+                cat.items.forEach(item => {
+                    if (item.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+                        filteredAllItems.push({ ...item, category: cat.category });
+                    }
+                });
+            });
+
+            return (
+                <div className="fixed inset-0 bg-black/95 flex flex-col z-[90] backdrop-blur-xl animate-in overflow-hidden">
+                    <div className="p-6 border-b border-white/10 flex justify-between items-center bg-[#050505]">
+                        <div><h2 className="text-2xl font-black text-white flex items-center gap-3"><Icons.Settings className="text-purple-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]" /> BOTTLE SPECS</h2><p className="text-[10px] text-white/40 uppercase tracking-widest mt-1">Weight Configuration (Grams)</p></div>
+                        <button onClick={onClose} className="px-6 py-2 bg-white/5 text-white/60 rounded-lg hover:bg-white/10 hover:text-white font-bold text-xs uppercase tracking-widest border border-white/5 transition-all">Exit</button>
+                    </div>
+                    <div className="p-4 bg-[#0A0A0A] border-b border-white/10">
+                        <div className="relative"><Icons.Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                        <input type="text" placeholder="SEARCH DATABASE..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-purple-500 focus:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all font-bold tracking-wider text-sm placeholder:text-white/20" /></div>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-6 space-y-3 bg-[#050505]">
+                        {filteredAllItems.map(item => (
+                            <div key={item.id} className="bg-[#0A0A0A] border border-white/5 rounded-xl p-4 shadow-lg flex justify-between items-center hover:border-purple-500/20 transition-all">
+                                <div className="flex-1">
+                                    <div className="font-bold text-white text-base tracking-wide">{item.name}</div>
+                                    <div className="text-[10px] text-white/30 uppercase tracking-widest mt-1">{item.category}</div>
+                                </div>
+                                <div className="flex gap-4 items-center">
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-[9px] text-purple-400/80 font-bold uppercase tracking-widest">Empty (g)</label>
+                                        <input type="number" placeholder="-" className="w-20 bg-black/50 border border-white/10 rounded-lg px-2 py-2 text-center text-white font-mono text-sm focus:border-purple-500 focus:shadow-[0_0_10px_rgba(168,85,247,0.2)] outline-none" 
+                                            value={localWeights[item.id]?.empty !== undefined ? localWeights[item.id].empty : (item.weight_empty || "")} 
+                                            onChange={(e) => handleWeightChange(item.id, 'empty', e.target.value)} 
+                                        />
+                                    </div>
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-[9px] text-purple-400/80 font-bold uppercase tracking-widest">Full (g)</label>
+                                        <input type="number" placeholder="-" className="w-20 bg-black/50 border border-white/10 rounded-lg px-2 py-2 text-center text-white font-mono text-sm focus:border-purple-500 focus:shadow-[0_0_10px_rgba(168,85,247,0.2)] outline-none" 
+                                            value={localWeights[item.id]?.full !== undefined ? localWeights[item.id].full : (item.weight_full || "")} 
+                                            onChange={(e) => handleWeightChange(item.id, 'full', e.target.value)} 
+                                        />
+                                    </div>
+                                    <button onClick={() => saveWeight(item)} className="h-10 w-10 flex items-center justify-center bg-purple-900/20 hover:bg-purple-500 text-purple-400 hover:text-white rounded-xl border border-purple-500/30 transition-all shadow-lg active:scale-95"><Icons.Save size={18} /></button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             );
@@ -1005,7 +930,9 @@
             onToggleSearch, showSearch, 
             onFilterCategory, currentFilter, onStarClick,
             // Mobile Sync Props
-            mobileSyncEnabled, onToggleMobileSync 
+            mobileSyncEnabled, onToggleMobileSync,
+            // New Prop for Bottle Specs
+            onShowBottleSpecs 
         }) => {
             const [showMenu, setShowMenu] = useState(false);
             const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -1063,7 +990,27 @@
                                 {/* SETTINGS BUTTON */}
                                 <button onClick={() => setShowMenu(!showMenu)} className={`flex items-center justify-center w-12 h-12 rounded-xl font-bold shadow-lg active:scale-95 border transition-all ${showMenu ? 'bg-white/20 text-white border-white/50 scale-105' : 'bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border-white/5'}`}><Icons.Settings size={20} /></button>
                             </div>
-                            {showMenu && (<><div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)}></div><div className="absolute top-full right-0 mt-4 w-72 bg-[#050505]/95 border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] z-50 p-2 flex flex-col gap-1 animate-in origin-top-right backdrop-blur-xl"><div className="text-[9px] text-white/30 uppercase font-black tracking-[0.3em] px-4 py-3 border-b border-white/5 mb-1">System Controls</div><div className="flex gap-2 p-1"><button onClick={() => { onBackup(); setShowMenu(false); }} className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-300 hover:border-cyan-500/50 text-white/70 p-3 rounded-xl text-xs font-bold border border-white/5 transition-all"><Icons.Save size={14} /> Backup</button><button onClick={() => { onRestore(); setShowMenu(false); }} className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-300 hover:border-cyan-500/50 text-white/70 p-3 rounded-xl text-xs font-bold border border-white/5 transition-all"><Icons.Upload size={14} /> Load</button></div><button onClick={() => { onShowPurchasesLog(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-900/20 hover:text-emerald-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.Package size={18} /> Inbound Log</button><button onClick={() => { onShowSalesEntry(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-900/20 hover:text-indigo-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.DollarSign size={18} /> POS Manual Entry</button><button onClick={() => { onShopping(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-amber-900/20 hover:text-amber-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.ShoppingCart size={18} /> Procurement</button><button onClick={() => { onShowCharts(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-cyan-900/20 hover:text-cyan-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.BarChart size={18} /> Analytics</button><button onClick={() => { onDownloadPDF(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-pink-900/20 hover:text-pink-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.FileText size={18} /> Export PDF Report</button><button onClick={() => { onNewPeriod(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-900/20 hover:text-emerald-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.ArrowRight size={18} /> End Period / Start New</button><div className="h-px bg-white/5 my-1 mx-2"></div><button onClick={() => { onClearAll(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-red-900/20 text-red-400 hover:text-red-300 transition-all text-sm font-bold text-left group uppercase tracking-wider"><Icons.Trash size={18} /> Factory Reset</button></div></>)}
+                            {showMenu && (<><div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)}></div><div className="absolute top-full right-0 mt-4 w-72 bg-[#050505]/95 border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] z-50 p-2 flex flex-col gap-1 animate-in origin-top-right backdrop-blur-xl"><div className="text-[9px] text-white/30 uppercase font-black tracking-[0.3em] px-4 py-3 border-b border-white/5 mb-1">System Controls</div>
+                            
+                            <div className="flex gap-2 p-1"><button onClick={() => { onBackup(); setShowMenu(false); }} className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-300 hover:border-cyan-500/50 text-white/70 p-3 rounded-xl text-xs font-bold border border-white/5 transition-all"><Icons.Save size={14} /> Backup</button><button onClick={() => { onRestore(); setShowMenu(false); }} className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-300 hover:border-cyan-500/50 text-white/70 p-3 rounded-xl text-xs font-bold border border-white/5 transition-all"><Icons.Upload size={14} /> Load</button></div>
+                            
+                            <button onClick={() => { onShowPurchasesLog(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-900/20 hover:text-emerald-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.Package size={18} /> Inbound Log</button>
+                            <button onClick={() => { onShowSalesEntry(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-900/20 hover:text-indigo-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.DollarSign size={18} /> POS Manual Entry</button>
+                            <button onClick={() => { onShopping(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-amber-900/20 hover:text-amber-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.ShoppingCart size={18} /> Procurement</button>
+                            <button onClick={() => { onShowCharts(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-cyan-900/20 hover:text-cyan-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.BarChart size={18} /> Analytics</button>
+                            
+                            {/* --- BOTTLE SPECS BUTTON (MOVED HERE) --- */}
+                            <button onClick={() => { onShowBottleSpecs(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-900/20 hover:text-purple-400 text-white/70 transition-all text-sm font-medium text-left">
+                                <Icons.Settings size={18} className="text-purple-500" /> Bottle Specs (Weights)
+                            </button>
+                            {/* -------------------------------------- */}
+
+                            <button onClick={() => { onDownloadPDF(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-pink-900/20 hover:text-pink-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.FileText size={18} /> Export PDF Report</button>
+                            <button onClick={() => { onNewPeriod(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-900/20 hover:text-emerald-400 text-white/70 transition-all text-sm font-medium text-left"><Icons.ArrowRight size={18} /> End Period / Start New</button>
+                            <div className="h-px bg-white/5 my-1 mx-2"></div>
+                            <button onClick={() => { onClearAll(); setShowMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-red-900/20 text-red-400 hover:text-red-300 transition-all text-sm font-bold text-left group uppercase tracking-wider"><Icons.Trash size={18} /> Factory Reset</button>
+                            
+                            </div></>)}
                         </div>
                     </div>
                 </header>
@@ -1071,9 +1018,12 @@
         };
         
        // --- DATA HELPERS ---
+       // UPDATED: Included weight fields to prevent errors
         const createItem = (id, name) => ({ 
             id, 
             name, 
+            weight_empty: "", 
+            weight_full: "",
             bar1: "", bar2: "", bodega: "", barroluco: "", 
             start_bar1: "", start_bar2: "", start_bodega: "", start_barroluco: "", 
             purchases: "", sales: "", 
@@ -1188,6 +1138,9 @@
             const [openCategories, setOpenCategories] = useState({});
             const [searchTerm, setSearchTerm] = useState("");
             const [categoryFilter, setCategoryFilter] = useState(null);
+
+            // --- NUEVO ESTADO PARA EL MODAL DE PESOS ---
+            const [showBottleSpecs, setShowBottleSpecs] = useState(false); 
 
             // PREMIUM MODAL STATE
             const [showPremiumModal, setShowPremiumModal] = useState(false);
@@ -1459,6 +1412,8 @@
                             // PASAMOS PROPS DEL MÓVIL AL HEADER
                             mobileSyncEnabled={mobileSyncEnabled}
                             onToggleMobileSync={toggleMobileSync}
+                            // PROPS DEL BOTÓN DE PESOS (LA RUEDITA)
+                            onShowBottleSpecs={() => setShowBottleSpecs(true)}
                         />
                         {showSearch && (
                             <div className="bg-[#050505]/95 p-4 border-b border-white/10 backdrop-blur-md animate-in"><div className="max-w-6xl mx-auto relative flex gap-3"><div className="relative flex-1"><Icons.Search className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500" size={20} /><input type="text" placeholder="QUERY DATABASE..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-black/50 rounded-xl pl-12 pr-4 py-4 text-white border border-white/10 focus:outline-none focus:border-cyan-500 focus:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all placeholder:text-white/20 font-bold tracking-wider text-sm" autoFocus/></div><button onClick={() => { setShowSearch(false); setSearchTerm(""); }} className="bg-white/5 hover:bg-white/10 text-white px-6 rounded-xl font-bold border border-white/5 uppercase tracking-widest text-xs">Close</button></div></div>
@@ -1491,6 +1446,14 @@
                         onClose={() => setShowPremiumModal(false)}
                         data={data}
                         onUpdateStickers={updateItemStickers}
+                    />
+
+                    {/* --- NUEVO MODAL DE PESOS RENDERIZADO AQUÍ --- */}
+                    <BottleSpecsModal 
+                        isOpen={showBottleSpecs}
+                        onClose={() => setShowBottleSpecs(false)}
+                        data={data}
+                        onUpdate={updateItem}
                     />
 
                     {notification && (<div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#1D1F23] text-white px-8 py-4 rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-emerald-500/50 flex items-center gap-4 animate-in z-[100] whitespace-nowrap backdrop-blur-xl"><Icons.CheckCircle size={24} className="text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]" /><span className="font-bold text-sm tracking-widest uppercase">{notification}</span></div>)}
